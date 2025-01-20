@@ -58,7 +58,7 @@ function updateTimer() {
             const minutes = Math.floor((timeUntilNextUpdate % (1000 * 60 * 60)) / (1000 * 60));
             const timerElement = document.getElementById('updateTimer');
             if (timerElement) {
-                timerElement.textContent = `Следующее обновление статистики через: ${hours}год ${minutes}хв`;
+                timerElement.textContent = `Следующее обновление статистики через: ${hours} : ${minutes}`;
             }
         }
     }
