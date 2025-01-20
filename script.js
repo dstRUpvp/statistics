@@ -99,6 +99,6 @@ async function updateStats() {
     });
 }
 // Оновлюємо дані кожні 3 секунди
-setInterval(updateStats, 3000);
+setInterval(updateStats, 10800000);
 // Початкове завантаження даних
 updateStats();
