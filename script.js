@@ -1,5 +1,5 @@
 // Конфігурація для JSONbin.io
-const JSONBIN_API_URL = 'https://api.jsonbin.io/v3/b/678cef8bacd3cb34a8ced98b';
+const JSONBIN_API_URL = 'https://api.jsonbin.io/v3/b/678cef8bacd3cb34a8ced98';
 const API_KEY = '$2a$10$35zUjtJtU2AI1u3NXiNR6uIh7VRwVoickMOQE8af0OBpPVg73al/W';
 const UPDATE_INTERVAL = 3000; // 3 години в мілісекундах
 
