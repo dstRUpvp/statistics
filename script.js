@@ -25,6 +25,10 @@ async function fetchPlayerStats() {
         return data.record;
     } catch (error) {
         console.error('Error fetching data:', error);
+        const savedData = localStorage.getItem('playerStats');
+        if (savedData) {
+            return JSON.parse(savedData).data;
+        }
         return {};
     }
 }
@@ -58,19 +62,80 @@ function updateTimer() {
             const minutes = Math.floor((timeUntilNextUpdate % (1000 * 60 * 60)) / (1000 * 60));
             const timerElement = document.getElementById('updateTimer');
             if (timerElement) {
-                timerElement.textContent = `Следующее обновление статистики через: ${hours} : ${minutes}`;
+                timerElement.textContent = `Наступне оновлення через: ${hours}год ${minutes}хв`;
             }
         }
     }
 }
 
-// ... keep existing code (calculateKD function)
+function calculateKD(kills, deaths) {
+    return (kills / Math.max(deaths, 1)).toFixed(2);
+}
 
-// ... keep existing code (updateLeaderboard function)
+function updateLeaderboard(players) {
+    const leaderboardBody = document.getElementById('leaderboardBody');
+    leaderboardBody.innerHTML = '';
 
-// ... keep existing code (createPlayerCards function)
+    // Перетворюємо об'єкт гравців в масив для сортування
+    const playerArray = Object.entries(players)
+        .map(([name, stats]) => ({
+            name,
+            ...stats,
+            kd: calculateKD(stats.kills, stats.deaths)
+        }))
+        .sort((a, b) => b.kd - a.kd);
 
-// ... keep existing code (filterPlayers function)
+    // Відображаємо топ 5 гравців
+    playerArray.slice(0, 5).forEach(player => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${player.name}</td>
+            <td>${player.kd}</td>
+            <td>${player.kills}</td>
+            <td>${player.deaths}</td>
+        `;
+        leaderboardBody.appendChild(row);
+    });
+}
+
+function createPlayerCards(players) {
+    const playerCards = document.getElementById('playerCards');
+    playerCards.innerHTML = '';
+
+    Object.entries(players).forEach(([name, stats]) => {
+        const kd = calculateKD(stats.kills, stats.deaths);
+        const card = document.createElement('div');
+        card.className = 'player-card';
+        card.innerHTML = `
+            <div class="player-name">${name}</div>
+            <div class="player-stats">
+                <div class="stat">
+                    <div class="stat-label">Вбивства</div>
+                    <div class="stat-value">${stats.kills}</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">Смерті</div>
+                    <div class="stat-value">${stats.deaths}</div>
+                </div>
+                <div class="kd-ratio">
+                    <div class="stat-label">K/D Ratio</div>
+                    <div class="kd-value">${kd}</div>
+                </div>
+            </div>
+        `;
+        playerCards.appendChild(card);
+    });
+}
+
+function filterPlayers(players, searchTerm) {
+    const filtered = {};
+    Object.entries(players).forEach(([name, stats]) => {
+        if (name.toLowerCase().includes(searchTerm.toLowerCase())) {
+            filtered[name] = stats;
+        }
+    });
+    return filtered;
+}
 
 // Основна функція для оновлення даних
 async function updateStats() {
@@ -80,17 +145,17 @@ async function updateStats() {
 
     // Додаємо обробник події для пошуку
     const searchInput = document.getElementById('searchInput');
-    searchInput.addEventListener('input', (e) => {
-        const filtered = filterPlayers(players, e.target.value);
-        createPlayerCards(filtered);
-    });
+    if (!searchInput.hasListener) {
+        searchInput.hasListener = true;
+        searchInput.addEventListener('input', (e) => {
+            const filtered = filterPlayers(players, e.target.value);
+            createPlayerCards(filtered);
+        });
+    }
 }
 
 // Оновлюємо таймер кожну хвилину
 setInterval(updateTimer, 60000);
-
-// Оновлюємо дані кожні 3 години
-setInterval(updateStats, UPDATE_INTERVAL);
 
 // Початкове завантаження даних
 updateStats();
