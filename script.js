@@ -1,7 +1,7 @@
 // Конфігурація для JSONbin.io
 const JSONBIN_API_URL = 'https://api.jsonbin.io/v3/b/678cef8bacd3cb34a8ced98b';
 const API_KEY = '$2a$10$35zUjtJtU2AI1u3NXiNR6uIh7VRwVoickMOQE8af0OBpPVg73al/W';
-const UPDATE_INTERVAL = 10800000; // 3 години в мілісекундах
+const UPDATE_INTERVAL = 1800000; // 3 години в мілісекундах
 
 // Функція для отримання даних з JSONbin.io
 async function fetchPlayerStats() {
